@@ -33,9 +33,9 @@ const Page = () => {
   const keyboardVerticalOffset = Platform.OS === 'ios' ? 80 : 0;
 
   const onSignIn = useCallback(async () => {
-    if (!isLoaded) {
-      return;
-    }
+    // if (!isLoaded) {
+    //   return;
+    // }
 
     try {
       const signInAttempt = await signIn.create({
@@ -45,7 +45,7 @@ const Page = () => {
 
       if (signInAttempt.status === 'complete') {
         await setActive({ session: signInAttempt.createdSessionId });
-        router.replace('/');
+        router.replace('/(authenticated)/(tabs)/home');
       } else {
         // See https://clerk.com/docs/custom-flows/error-handling
         // for more info on error handling

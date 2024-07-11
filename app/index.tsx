@@ -28,9 +28,9 @@ const Page = () => {
   const keyboardVerticalOffset = Platform.OS === "ios" ? 80 : 0;
 
   const onSignUpPress = async () => {
-    if (!isLoaded) {
-      return;
-    }
+    // if (!isLoaded) {
+    //   return;
+    // }
 
     try {
       await signUp.create({
