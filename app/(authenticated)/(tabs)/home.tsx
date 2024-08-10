@@ -36,6 +36,8 @@ import { Picker } from "@react-native-picker/picker";
 import { BlurView } from "expo-blur";
 import { ResizeMode } from "expo-av";
 import { Switch } from "react-native-gesture-handler";
+import axios from "axios";
+const API_LINK = process.env.NGROK_LINK;
 
 const Page = () => {
   LogBox.ignoreAllLogs();
@@ -43,12 +45,12 @@ const Page = () => {
   const headerHeight = useHeaderHeight();
   const [price, setPrice] = useState(0);
   const [editing, setEditing] = useState(false);
-  const [media, setMedia] = useState(null);
+  const [media, setMedia] = useState("");
   const [isDialogVisible, setDialogVisible] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [country, setCountry] = useState("");
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(true);
   const [accountNumber, setAccountNumber] = useState("");
   const [accountType, setAccountType] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
@@ -65,14 +67,30 @@ const Page = () => {
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   const [generatedLink, setGeneratedLink] = useState("");
+  const [shortLink, setShortLink] = useState("");
 
   // Function to generate a random link
-  const generateLink = () => {
+  const generateLink = async () => {
     setGenerateLinkState(true);
     setGenerateButtonState(false);
-    const randomString1 = Math.random().toString(36).substring(7); // Generates a random string
-    const randomString2 = Math.random().toString(36).substring(7); // Generates a random string
-    setGeneratedLink(`unlockin.me/${randomString1}/${randomString2}`);
+    const data = new FormData();
+    data.append("files", media);
+    data.append("price", price);
+    data.append("title", "ASDF");
+    console.log(media);
+    // console.log(data._parts);
+    await axios
+      .post(`https://36d5-182-187-145-103.ngrok-free.app/api/media`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log(response.data.link);
+        setGeneratedLink(response.data.link);
+      });
+    // console.log(generatedLink)
+    // setGeneratedLink(shortLink);
   };
 
   const copyToClipboard = () => {
@@ -101,9 +119,16 @@ const Page = () => {
       allowsEditing: true,
       quality: 1,
     });
-
+    if (!result.canceled) {
+      // setMedia(result.assets[0].uri);
+      setMedia({
+        uri: result.assets[0].uri,
+        name: "files",
+        type: "image/jpg",
+      });
+      setAddMedia(false);
+    }
     setShowMedia(true);
-    setAddMedia(false);
   };
 
   const handlePress = () => {
@@ -138,12 +163,6 @@ const Page = () => {
             >
               <AntDesign name="plus" size={70} color="white" />
             </TouchableOpacity>
-            {media && (
-              <Image
-                source={{ uri: media }}
-                style={{ width: 200, height: 200, marginTop: 20 }}
-              />
-            )}
           </View>
           <Text style={styles.addMediaHeader}>Add Media</Text>
           <Text style={{ color: Colors.gray, fontSize: 15.5 }}>All kind</Text>
@@ -155,7 +174,8 @@ const Page = () => {
           <View style={styles.containerVideoHome}>
             <Image
               resizeMode={ResizeMode.COVER}
-              source={require("../../../assets/images/icon-dark.png")}
+              source={{ uri: media.uri }}
+              // source={require("../../../assets/images/icon-dark.png")}
               style={styles.videoVideoHome}
             />
 
