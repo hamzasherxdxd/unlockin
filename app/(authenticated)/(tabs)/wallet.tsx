@@ -348,12 +348,15 @@ setWalletButton: {
 
   modalContainer: {
     flex: 1,
+    marginTop:30,
     backgroundColor: '#fff',
     padding: 20,
   },
   backButton: {
     position: 'absolute',
     top: 40,
+    height:70,
+    width:70,
     left: 20,
     zIndex: 1,
   },

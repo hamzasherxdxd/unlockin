@@ -67,9 +67,9 @@ const Page = () => {
           <View style={styles.modalContainer}>
 
             
-        <View style={[styles.modalContainerRowHeader,{marginBottom:25}]}>
+        <View style={[styles.modalContainerRowHeader,{marginBottom:10}]}>
 
-        <TouchableOpacity onPress={() => setModalVisible(false)} >
+        <TouchableOpacity style={styles.backButton} onPress={() => setModalVisible(false)} >
         <Ionicons name="chevron-back" size={25} color="black" />
         </TouchableOpacity>
 
@@ -306,6 +306,7 @@ linkBlock: {
 modalContainer: {
   flex: 1,
   backgroundColor: '#fff',
+  marginTop:40,
   padding: 20,
 },
 
@@ -330,9 +331,12 @@ pillButton: {
 },
 
 backButton: {
-  position: 'absolute',
-  top: 40,
-  left: 20,
+  display: 'flex',
+  // position: 'absolute',
+  height: 70,
+  width: 70,
+  top: 10,
+  // left: 2,
   zIndex: 1,
 },
 Generate: {
@@ -355,6 +359,7 @@ circle: {
   backgroundColor: Colors.lightGray, // gray color
   alignItems: 'center',
   justifyContent: 'center',
+  marginLeft:28,
   
 },
 circle1: {

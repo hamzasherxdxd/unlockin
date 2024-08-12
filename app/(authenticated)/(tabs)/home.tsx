@@ -68,6 +68,7 @@ const Page = () => {
 
   const [generatedLink, setGeneratedLink] = useState("");
   const [shortLink, setShortLink] = useState("");
+  const [zeroPrice, setZeroPrice] = useState(true);
 
   // Function to generate a random link
   const generateLink = async () => {
@@ -80,7 +81,7 @@ const Page = () => {
     console.log(media);
     // console.log(data._parts);
     await axios
-      .post(`https://36d5-182-187-145-103.ngrok-free.app/api/media`, data, {
+      .post(`https://c146-182-187-157-64.ngrok-free.app/api/media`, data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -89,6 +90,8 @@ const Page = () => {
         console.log(response.data.link);
         setGeneratedLink(response.data.link);
       });
+    setPrice(0);
+    setZeroPrice(true);
     // console.log(generatedLink)
     // setGeneratedLink(shortLink);
   };
@@ -127,24 +130,32 @@ const Page = () => {
         type: "image/jpg",
       });
       setAddMedia(false);
+      setShowMedia(true);
     }
-    setShowMedia(true);
+    if (result.canceled) {
+      setMedia({});
+      setShowMedia(false);
+    }
   };
 
   const handlePress = () => {
     setEditing(true);
   };
 
-  const handleChange = (text: string) => {
+  const handleChange = (text: number) => {
     // Extracting the numerical value without 'Rs' and ensuring it's a valid number
-    const newPrice = parseFloat(text.replace("Rs ", ""));
-    if (!isNaN(newPrice)) {
-      setPrice(newPrice);
+    // console.log(price);
+    console.log(text);
+    if (text !== null && text !== 0) {
+      setZeroPrice(false);
+      setPrice(text);
+    } else {
+      setZeroPrice(true);
     }
   };
 
   const messageAlert = () => {
-    alert("Media is not selected!");
+    alert("Invalid Media or Price!");
   };
 
   return (
@@ -222,7 +233,7 @@ const Page = () => {
                   style={[styles.setPriceNum, { color: Colors.dark }]}
                   keyboardType="numeric"
                   value={editing ? `${price}` : `Rs ${price}`}
-                  onChangeText={handleChange}
+                  onChangeText={(price) => handleChange(price)}
                   onBlur={() => setEditing(false)}
                   onFocus={() => setEditing(true)}
                   selectTextOnFocus={true}
@@ -237,7 +248,7 @@ const Page = () => {
                 styles.generateLinkButton,
                 { backgroundColor: Colors.lightGray, marginVertical: 5 },
               ]}
-              onPress={showMedia ? generateLink : messageAlert}
+              onPress={showMedia && !zeroPrice ? generateLink : messageAlert}
             >
               <Text
                 style={[defaultStyles.buttonTextSmall, { color: Colors.dark }]}
